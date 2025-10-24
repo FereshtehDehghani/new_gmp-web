@@ -1,15 +1,30 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import localFont from "next/font/local";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import "./globals.css";
+import { Direction } from "radix-ui";
+import Navigation from "@/components/layout/Navigation";
+
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const irSansFont = localFont({
+  src: [
+    {
+      path: "./fonts/IRAN_Sans.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/IRAN_Sans_Bold.ttf",
+      weight: "700",
+      style: "bold",
+    },
+  ],
 });
 
 export const metadata: Metadata = {
@@ -23,12 +38,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+    <html lang='en' dir="rtl">
+  
+        <body className={`${irSansFont.className} antialiased`}>
+          <Navigation/>
+          {children}
+        </body>
     </html>
   );
 }
