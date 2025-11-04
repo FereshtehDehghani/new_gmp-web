@@ -1,7 +1,3 @@
-import SplashScreenPage from "@/components/shared/SplashScreen";
-import { IDecodedToken, IUser } from "@/constants/types";
-import useProfileAPI from "@/hooks/API-hooks/useProfileAPI";
-import { StorageService } from "@/utils/helpers";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import React, {
@@ -11,12 +7,11 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { Platform } from "react-native";
-import {
-  default as authConfig,
-  default as endepoints,
-} from "@/configs/APIEndpoints";
+
 import Constants from "expo-constants";
+import { useRouter } from "next/router";
+import { IDecodedToken, IUser } from "@/types";
+import APIEndPoints from "@/lib/constants/APIEndPoints";
 
 interface AuthContextType {
   isLoggedIn: boolean;
@@ -32,13 +27,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({
-  children,
-  isAppLoaded,
-}: {
-  children: ReactNode;
-  isAppLoaded: boolean;
-}) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [user, setUser] = useState<IUser | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -48,7 +37,7 @@ export const AuthProvider = ({
     useState<IDecodedToken | null>(null);
   const [isValidToken, setIsValidToken] = useState(false);
 
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const router = useRouter();
 
   const login = async (userData: IUser, accessToken: string) => {
     try {
@@ -57,8 +46,8 @@ export const AuthProvider = ({
       setUser(userData);
       setAccessToken(accessToken);
 
-      await StorageService.setItem("user", JSON.stringify(userData));
-      await StorageService.setItem("accessToken", accessToken);
+       localStorage.setItem("user", JSON.stringify(userData));
+       localStorage.setItem("accessToken", accessToken);
       console.log("setItem accessToken", accessToken);
 
       const decode = jwtDecode(accessToken);
@@ -80,8 +69,8 @@ export const AuthProvider = ({
       setAccessToken(null);
       setDecodedCurrentToken(null);
 
-      await StorageService.deleteItem("user");
-      await StorageService.deleteItem("accessToken");
+       localStorage.removeItem("user");
+       localStorage.removeItem("accessToken");
       setIsValidToken(false);
     } catch (error) {
       console.error("Error during logout:", error);
@@ -102,7 +91,7 @@ export const AuthProvider = ({
       const response = await axios.post(
         `${
           Constants.expoConfig?.extra?.apiUrl ?? "https://api.grip-academy.ir"
-        }${authConfig.postRefreshTokenEndpoint}`,
+        }${APIEndPoints.postRefreshTokenEndpoint}`,
         {},
         {
           headers: {
@@ -132,76 +121,73 @@ export const AuthProvider = ({
     }
   };
 
-useEffect(() => {
-  const initializeAuth = async () => {
-    try {
-      setIsLoading(true);
-
-      const [storedUserData, storedAccessToken] = await Promise.all([
-        StorageService.getItem("user"),
-        StorageService.getItem("accessToken"),
-      ]);
-
-      console.log("storedAccessToken", storedAccessToken);
-
-      if (!storedAccessToken || !storedUserData) {
-        console.log("No token or user data found, logging out");
-        await logout();
-        return;
-      }
-
-      // Validate the token
-      const isTokenValid = await refreshToken(storedAccessToken);
-      console.log("isTokenValid", isTokenValid);
-
-      if (!isTokenValid) {
-        console.log("Token is invalid, logging out");
-        await logout();
-        return;
-      }
-
-      // Token is valid, set up the auth state
+  useEffect(() => {
+    const initializeAuth = async () => {
       try {
-        const parsedUser = JSON.parse(storedUserData);
-        if (parsedUser) {
-          setIsLoggedIn(true);
-          setUser(parsedUser);
-          setAccessToken(storedAccessToken);
-          const decode = jwtDecode(storedAccessToken);
-          setDecodedCurrentToken(decode as IDecodedToken);
-          setIsValidToken(true); // This is the key line!
-          console.log("Auth initialized successfully");
+        setIsLoading(true);
+
+        const [storedUserData, storedAccessToken] = await Promise.all([
+          localStorage.getItem("user"),
+          localStorage.getItem("accessToken"),
+        ]);
+
+        console.log("storedAccessToken", storedAccessToken);
+
+        if (!storedAccessToken || !storedUserData) {
+          console.log("No token or user data found, logging out");
+          await logout();
+          return;
+        }
+
+        // Validate the token
+        const isTokenValid = await refreshToken(storedAccessToken);
+        console.log("isTokenValid", isTokenValid);
+
+        if (!isTokenValid) {
+          console.log("Token is invalid, logging out");
+          await logout();
+          return;
+        }
+
+        // Token is valid, set up the auth state
+        try {
+          const parsedUser = JSON.parse(storedUserData);
+          if (parsedUser) {
+            setIsLoggedIn(true);
+            setUser(parsedUser);
+            setAccessToken(storedAccessToken);
+            const decode = jwtDecode(storedAccessToken);
+            setDecodedCurrentToken(decode as IDecodedToken);
+            setIsValidToken(true); // This is the key line!
+            console.log("Auth initialized successfully");
+          }
+        } catch (error) {
+          console.error("Error parsing stored user data:", error);
+          await logout();
         }
       } catch (error) {
-        console.error("Error parsing stored user data:", error);
+        console.error("Error initializing auth:", error);
         await logout();
+      } finally {
+        setIsInitialized(true);
+        setIsLoading(false);
       }
+    };
 
-    } catch (error) {
-      console.error("Error initializing auth:", error);
-      await logout();
-    } finally {
-      setIsInitialized(true);
-      setIsLoading(false);
-    }
-  };
-
-  initializeAuth();
-}, []);
-
-;
+    initializeAuth();
+  }, []);
 
   // Navigation effect - only run after initialization
   useEffect(() => {
-    if (isInitialized && isAppLoaded) {
+    if (isInitialized) {
       console.log("isValidToken22", isValidToken);
       if (isValidToken && isLoggedIn) {
-        navigation.navigate("AppTabs");
+        router.push("/");
       } else {
-        navigation.navigate("Authentication");
+        router.push("auth-user");
       }
     }
-  }, [isValidToken, isInitialized, isAppLoaded, isLoggedIn]);
+  }, [isValidToken, isInitialized, isLoggedIn]);
 
   // Debug log (optional)
   useEffect(() => {
