@@ -8,10 +8,9 @@ import React, {
   useState,
 } from "react";
 
-import Constants from "expo-constants";
-import { useRouter } from "next/router";
 import { IDecodedToken, IUser } from "@/types";
 import APIEndPoints from "@/lib/constants/APIEndPoints";
+import { useRouter } from "next/compat/router";
 
 interface AuthContextType {
   isLoggedIn: boolean;
@@ -46,8 +45,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(userData);
       setAccessToken(accessToken);
 
-       localStorage.setItem("user", JSON.stringify(userData));
-       localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("accessToken", accessToken);
       console.log("setItem accessToken", accessToken);
 
       const decode = jwtDecode(accessToken);
@@ -69,8 +68,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setAccessToken(null);
       setDecodedCurrentToken(null);
 
-       localStorage.removeItem("user");
-       localStorage.removeItem("accessToken");
+      localStorage.removeItem("user");
+      localStorage.removeItem("accessToken");
       setIsValidToken(false);
     } catch (error) {
       console.error("Error during logout:", error);
@@ -89,9 +88,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       const response = await axios.post(
-        `${
-          Constants.expoConfig?.extra?.apiUrl ?? "https://api.grip-academy.ir"
-        }${APIEndPoints.postRefreshTokenEndpoint}`,
+        `${"https://api.grip-academy.ir"}${
+          APIEndPoints.postRefreshTokenEndpoint
+        }`,
         {},
         {
           headers: {
@@ -179,15 +178,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Navigation effect - only run after initialization
   useEffect(() => {
+    if (router && !router.isReady) return;
+
     if (isInitialized) {
       console.log("isValidToken22", isValidToken);
       if (isValidToken && isLoggedIn) {
-        router.push("/");
+        // eslint-disable-next-line no-floating-promises
+        router?.push("/");
       } else {
-        router.push("auth-user");
+        // eslint-disable-next-line no-floating-promises
+        router?.push("auth-user");
       }
     }
-  }, [isValidToken, isInitialized, isLoggedIn]);
+  }, [isValidToken, isInitialized, isLoggedIn, router]);
 
   // Debug log (optional)
   useEffect(() => {

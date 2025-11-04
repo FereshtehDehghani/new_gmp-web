@@ -5,6 +5,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Direction } from "radix-ui";
 import Navigation from "@/components/layout/Navigation";
+import { Providers } from "./Providers";
 
 
 const geistMono = Geist_Mono({
@@ -41,8 +42,7 @@ export default function RootLayout({
     <html lang='en' dir="rtl">
   
         <body className={`${irSansFont.className} antialiased`}>
-          <Navigation/>
-          {children}
+         <Providers>{children}</Providers>
         </body>
     </html>
   );

@@ -1,13 +1,29 @@
+import AnimatedErrorMessage from "@/components/UI/AnimatedErrorMesssage";
 import { Button } from "@/components/UI/Button";
 import Card from "@/components/UI/Card";
 import CustomInput from "@/components/UI/CustomInput";
 import SectionTitle from "@/components/UI/SectionTitle";
 import Typography from "@/components/UI/Typography";
 import { AppStrings } from "@/lib/constants/AppStrings";
-import { toPersianDigits } from "@/lib/utils";
+import { isValidatePhoneNumber, toPersianDigits } from "@/lib/utils";
 import { Icon } from "@iconify/react";
 
-const UserPhoneForm = () => {
+interface IUserPhoneFormProps {
+  errorMessage: any;
+  payloadLogin: any;
+  loadingStatus: string;
+  handleChangePhoneNumber: (text: string) => void;
+  handleSaveUsername: () => void;
+}
+
+const UserPhoneForm: React.FC<IUserPhoneFormProps> = (props) => {
+  const {
+    errorMessage,
+    payloadLogin,
+    loadingStatus,
+    handleChangePhoneNumber,
+    handleSaveUsername,
+  } = props;
   return (
     <Card>
       <div className='bg-white rounded-2xl border border-gray-200 p-6 w-full max-w-md mx-auto mt-8 shadow-lg'>
@@ -34,23 +50,30 @@ const UserPhoneForm = () => {
             label={AppStrings.form.phone}
             error={errorMessage?.message}
             isError={errorMessage?.name === "username"}
-            onChangeText={}
+            onChangeText={handleChangePhoneNumber}
             maxLength={11}
             isRTL={false}
-            icon={<Icon icon="fluent:phone-person-24-regular" width="24" height="24" />}
+            icon={
+              <Icon
+                icon='fluent:phone-person-24-regular'
+                width='24'
+                height='24'
+              />
+            }
           />
         </div>
 
         <Button
-          title={AppStrings.login.login}
           onClick={handleSaveUsername}
-          isLoading={loadingStatus === "gettingOptions"}
+          // isLoading={loadingStatus === "gettingOptions"}
           disabled={
             !payloadLogin?.username ||
             !isValidatePhoneNumber(payloadLogin?.username) ||
             loadingStatus === "gettingOptions"
           }
-        />
+        >
+          {AppStrings.login.login}
+        </Button>
       </div>
     </Card>
   );

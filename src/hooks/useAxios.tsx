@@ -1,10 +1,10 @@
+import { useAuth } from "@/context/useAuth";
 import axios from "axios";
-import Constants from "expo-constants";
 
 // import uuid from "react-native-uuid";
 
 const useAxios = () => {
-  const API_BASE_URL = Constants.expoConfig?.extra?.apiUrl;
+  const API_BASE_URL = "https://api.grip-academy.ir";
 
   const { logout } = useAuth();
 
