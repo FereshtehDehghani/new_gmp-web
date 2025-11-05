@@ -1,26 +1,27 @@
 @import "tailwindcss";
+@plugin "daisyui";
 
 :root {
-  --background:hsla(0, 0%, 94%, 1);
+  --background: hsla(0, 0%, 94%, 1);
   --foreground: hsla(210, 35%, 17%, 1);
   --primary: hsla(210, 35%, 17%, 1);
-  --primary-light: hsla(210, 35%, 17%, .2);
+  --primary-light: hsla(210, 35%, 17%, 0.2);
   --secondary: hsla(30, 61%, 50%, 1);
-  --secondary-light:hsla(30, 61%, 50%,.4 );
-  --secondary-text:hsla(0, 0%, 44%, 1);
-  --white:hsla(0, 0%, 94%, 1);
-  --card-strok:hsla(0, 0%, 87%, 1)
+  --secondary-light: hsla(30, 61%, 50%, 0.4);
+  --secondary-text: hsla(0, 0%, 44%, 1);
+  --white: hsla(0, 0%, 94%, 1);
+  --card-strok: hsla(0, 0%, 87%, 1);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-primary:var(--primary);
-  --color-secondary:var(--secondary);
-  --color-secondary-light:var(--secondary-light);
-  --color-primary-light:var(--primary-light);
-  --color-secondary-text:var(--secondary-text);
-  --color-white:var(--white);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-secondary-light: var(--secondary-light);
+  --color-primary-light: var(--primary-light);
+  --color-secondary-text: var(--secondary-text);
+  --color-white: var(--white);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -36,4 +37,15 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.inputStyle {
+  max-width: 2.7rem !important;
+  max-height: 2.7rem;
+  min-width: 2.5rem !important;
+  min-height: 2.4rem;
+  margin: 0 0.2rem;
+  font-size: 2rem;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
 }

@@ -5,6 +5,7 @@ import { Button } from "@/components/UI/Button";
 import { Input } from "@/components/UI/Input";
 import TimeLimitTimer from "@/components/UI/TimeLimitTimer";
 import { AppStrings } from "@/lib/constants/AppStrings";
+import { toPersianDigits } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { ChevronLeft, Edit } from "lucide-react";
 import OTPInput from "react-otp-input";
@@ -47,7 +48,6 @@ interface UserInfoFormProps {
   setIsExpired: (expired: boolean) => void;
   timeLeft: number;
   setTimeLeft: (time: number) => void;
-
 }
 
 const UserInfoForm: React.FC<UserInfoFormProps> = ({
@@ -98,7 +98,7 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({
               group
               flex flex-row items-center justify-center
               px-1 gap-1
-              text-blue-600 hover:text-blue-700
+              text-primary hover:text-primary-light
               transition-all duration-200
               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg
               hover:scale-105
@@ -108,8 +108,8 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({
               {AppStrings.login.editPhoneNumber}
             </span>
             <Edit
-              size={18}
-              className='text-blue-600 group-hover:scale-110 transition-transform'
+              size={24}
+              className='text-primary group-hover:scale-110 transition-transform'
             />
           </button>
 
@@ -126,7 +126,7 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({
             '
           >
             <ChevronLeft
-              size={20}
+              size={28}
               className='text-gray-700 group-hover:scale-110 transition-transform'
             />
           </button>
@@ -140,7 +140,7 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({
           <div key={item?.name ?? i} className='w-full mb-4'>
             {item.type === "Code" ? (
               <div className='space-y-4'>
-                <p className='text-gray-600 text-sm text-center'>
+                <p className='text-gray-500 text-sm'>
                   {`کد ${codeLength(authSettings.inputs)} رقمی به شماره ${
                     payloadLogin.username
                   } ارسال شد.`}
@@ -148,12 +148,14 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({
 
                 <div className='space-y-2'>
                   <OTPInput
-                    value={payloadLogin?.inputValues?.code ?? ""}
-                    onChange={(otp: string) =>
-                      handleChangeInputs(item, otp)}
+                    inputStyle='inputStyle'
+                    value={toPersianDigits(payloadLogin?.inputValues?.code ?? '') ?? ""}
+                    onChange={(otp: string) => handleChangeInputs(item, toPersianDigits(otp))}
                     numInputs={item?.codeLength ?? 6}
-                    renderSeparator={<span>-</span>}
+                    renderSeparator={<span> </span>}
                     renderInput={(props) => <input {...props} />}
+                    containerStyle={{direction:"ltr",alignSelf:"center",margin:"auto",flexDirection:"row",justifyContent:"center"}}
+                   
                   />
                   {/* <OtpInput
                     numberOfDigits={item?.codeLength ?? 6}
@@ -210,9 +212,7 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({
             ) : (
               <Input
                 placeholder={item.label}
-                type={
-                  item.name === "email" ? "email-address" : "default"
-                }
+                type={item.name === "email" ? "email-address" : "default"}
                 required={item.required}
                 value={payloadLogin?.inputValues[item.name] ?? ""}
                 label={item.label}
@@ -228,6 +228,7 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({
       {/* Submit Button and Timer */}
       <div className='mt-4 space-y-4'>
         <Button
+          variant={"secondary"}
           onClick={verifyAuthentication}
           //   isLoading={loadingStatus === "veryfying"}
           disabled={
@@ -235,7 +236,11 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({
               ?.length !== 0 || loadingStatus === "veryfying"
           }
         >
-          {AppStrings.login.login}
+          {loadingStatus === "veryfying" ? (
+            <span className='loading loading-infinity loading-lg text-white'></span>
+          ) : (
+            AppStrings.login.login
+          )}
         </Button>
 
         <TimeLimitTimer

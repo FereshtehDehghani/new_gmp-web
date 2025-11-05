@@ -1,20 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { InputProps } from "../Input";
 
-interface PhoneInputProps {
-  inputProps: InputProps;
-  error?: boolean;
-  errorMessage?: string;
+
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
+  error?: boolean;
+  errorMessage?: boolean;
 }
 
-export default function CustomInput(props: PhoneInputProps) {
-  const { inputProps, error, errorMessage, label } = props;
+export default function CustomInput(props: InputProps) {
+  const { error, errorMessage, label,...rest } = props;
 
   return (
-    <div className='w-full max-w-sm'>
+    <div className='w-ful'>
       {
         <label
           htmlFor='phone'
@@ -33,7 +33,7 @@ export default function CustomInput(props: PhoneInputProps) {
             transition-all duration-200
             ${error ? "border-red-500 bg-red-50" : "border-gray-300 bg-white"}
           `}
-          {...inputProps}
+          {...rest}
         />
 
         {error && errorMessage ? (

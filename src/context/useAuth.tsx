@@ -10,7 +10,7 @@ import React, {
 
 import { IDecodedToken, IUser } from "@/types";
 import APIEndPoints from "@/lib/constants/APIEndPoints";
-import { useRouter } from "next/compat/router";
+import { useRouter } from "next/navigation";
 
 interface AuthContextType {
   isLoggedIn: boolean;
@@ -176,18 +176,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     initializeAuth();
   }, []);
 
-  // Navigation effect - only run after initialization
   useEffect(() => {
-    if (router && !router.isReady) return;
+    // localStorage.removeItem('accessToken')
+    if (!router) return;
 
     if (isInitialized) {
       console.log("isValidToken22", isValidToken);
       if (isValidToken && isLoggedIn) {
         // eslint-disable-next-line no-floating-promises
-        router?.push("/");
+        router?.push("/dashboard");
       } else {
         // eslint-disable-next-line no-floating-promises
-        router?.push("auth-user");
+        router?.push("/auth-user");
       }
     }
   }, [isValidToken, isInitialized, isLoggedIn, router]);

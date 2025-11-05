@@ -3,7 +3,7 @@ import { AppStrings } from "../constants/AppStrings";
 export const navigtaionConfig = [
   {
     title: AppStrings.navigationTabs.home,
-    link: "/",
+    link: "/dashboard",
     activeIconName: "iconamoon:home-fill",
     inactiveIconName: "iconamoon:home-light",
   },

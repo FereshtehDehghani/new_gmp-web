@@ -15,15 +15,15 @@ interface ButtonProps
 }
 
 const buttonVariants = cva(
-  `inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors 
+  `w-full inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors 
    focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring 
-   disabled:pointer-events-none disabled:opacity-50`,
+   disabled:pointer-events-none disabled:opacity-60`,
   {
     variants: {
       variant: {
         dark: "bg-slate-900 text-white",
-        primary: "bg-indigo-600 hover:bg-indigo-700 text-white",
-        secondary: "bg-indigo-500 hover:bg-indigo-700",
+        primary: "bg-primary text-white",
+        secondary: "bg-secondary text-white",
         destructive: "bg-red-500 text-white hover:bg-red-700",
         ok: "bg-green-500 hover:bg-green-700",
         ghost: "bg-gray-50 hover:bg-gray-100 text-gray-700",

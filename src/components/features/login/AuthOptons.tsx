@@ -1,11 +1,11 @@
 "use client";
 
 import { motion, AnimatePresence } from "motion/react";
-import SectionTitle from "@/components/UI/SectionTitle";
 import ButtonOptionss from "./ButtonOptionss";
 import AnimatedErrorMessage from "@/components/UI/AnimatedErrorMesssage";
 import { Icon } from "@iconify/react";
 import { AppStrings } from "@/lib/constants/AppStrings";
+import Typography from "@/components/UI/Typography";
 
 interface StepTwoCardProps {
   animatedAuthOptionsStyle?: any;
@@ -34,7 +34,8 @@ const AuthOptions: React.FC<StepTwoCardProps> = ({
       className={`
         w-full max-w-md mx-auto
         bg-white rounded-2xl shadow-lg
-        p-6 border border-gray-200
+        py-6 px-4 border border-gray-200 
+        sm:min-w-lg md:min-w-xl min-h-64
       `}
       style={animatedAuthOptionsStyle}
     >
@@ -53,8 +54,8 @@ const AuthOptions: React.FC<StepTwoCardProps> = ({
             onClick={handleReset}
             className='
               flex flex-row items-center justify-center
-              px-1 gap-1
-              text-blue-600 hover:text-blue-700
+           gap-1
+              text-primary hover:text-primary-light
               transition-colors duration-200
               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded
             '
@@ -70,7 +71,7 @@ const AuthOptions: React.FC<StepTwoCardProps> = ({
             className='
               -mt-1
               flex flex-row items-center justify-center
-              px-1 gap-1
+              gap-1
               text-gray-700 hover:text-gray-900
               transition-colors duration-200
               focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 rounded
@@ -78,19 +79,18 @@ const AuthOptions: React.FC<StepTwoCardProps> = ({
           >
             <Icon
               icon='famicons:chevron-back-sharp'
-              width='512'
-              height='512'
-              className='text-gray-700'
+              width='24'
+              height='24'
+              className='text-primary'
             />
           </button>
         </div>
-
-        {/* Title */}
-        <SectionTitle title={AppStrings.login.stepTwoTitle} />
       </div>
 
       {/* Auth Options */}
-      <div>
+      <div className='mt-4 flex flex-col w-full gap-4'>
+        <Typography type='body1'>{AppStrings.login.stepTwoTitle}</Typography>
+
         <ButtonOptionss
           authOptionsItems={authOptions ?? []}
           handleSelectOption={handleSelectOption}

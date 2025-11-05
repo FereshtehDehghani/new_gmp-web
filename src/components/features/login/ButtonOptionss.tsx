@@ -32,7 +32,7 @@ const ButtonOptionss: React.FC<IProps> = (props) => {
           className="
             w-full py-3 px-4 rounded-xl
             flex flex-row justify-center items-center
-            bg-blue-600 hover:bg-blue-700
+            bg-primary hover:bg-primary-light
             disabled:opacity-50 disabled:cursor-not-allowed
             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
             transition-colors duration-200

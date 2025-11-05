@@ -42,10 +42,10 @@ const Typography: React.FC<TextProps> = ({
 
   // Type classes
   const typeClasses = {
-    h1: 'text-4xl font-semibold',
-    h2: 'text-3xl font-semibold leading-5',
-    h3: 'text-2xl font-semibold leading-6',
-    h4: 'text-xl font-semibold leading-7',
+    h1: 'text-3xl font-semibold',
+    h2: 'text-2xl font-semibold leading-5',
+    h3: 'text-xl font-semibold leading-6',
+    h4: 'text-lg font-semibold leading-7',
     body1: 'text-base leading-8 font-normal',
     body2: 'text-sm leading-8 font-normal',
     body3: 'text-xs leading-8 font-normal',
