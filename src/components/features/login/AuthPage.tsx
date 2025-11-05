@@ -1,12 +1,14 @@
-'use client'
+"use client";
 
-import useAuthAPI from "@/hooks/useAuthAPI";
+import useAuthAPI, { validationInputs } from "@/hooks/useAuthAPI";
 import { AppStrings } from "@/lib/constants/AppStrings";
 import { isValidatePhoneNumber } from "@/lib/utils";
 import { IAuthInputField, IAuthOption } from "@/types";
 import { useState } from "react";
 import UserPhoneForm from "./UserPhoneForm";
-
+import AuthOptions from "./AuthOptons";
+import UserInfoForm from "./UserInfoForm";
+import { error } from "console";
 
 const codeLength = (authInputs: IAuthInputField[]) => {
   return authInputs?.find((i) => i.type === "Code")?.codeLength;
@@ -74,7 +76,6 @@ export default function AuthPage() {
     const inputValues = { ...payloadLogin.inputValues };
     inputValues[item.name] = newValue;
 
-
     setPayloadLogin({ ...payloadLogin, inputValues });
   };
 
@@ -102,18 +103,40 @@ export default function AuthPage() {
           {/* Header */}
 
           {loginStep === 0 ? (
-
-          <UserPhoneForm
-          errorMessage={errorMessage}
-          payloadLogin={payloadLogin}
-          loadingStatus={loadingStatus}
-          handleChangePhoneNumber={(text:string)=>handleChangeInputs("username",text)}
-          handleSaveUsername={handleSaveUsername}
-          />
+            <UserPhoneForm
+              errorMessage={errorMessage}
+              payloadLogin={payloadLogin}
+              loadingStatus={loadingStatus}
+              handleChangePhoneNumber={(text: string) =>
+                setPayloadLogin({ username: text })
+              }
+              handleSaveUsername={handleSaveUsername}
+            />
           ) : authOptions?.length && loginStep === 1 ? (
-            <p>Step2</p>
+            <AuthOptions
+              handleReset={handleReset}
+              handleGoToPreStep={handleGoToPreStep}
+              authOptions={authOptions}
+              handleSelectOption={handleSelectOption}
+              loadingStatus={loadingStatus}
+              errorMessage={errorMessage}
+            />
           ) : authSettings?.inputs && loginStep === 2 ? (
-            <p>Step3</p>
+            <UserInfoForm
+              errorMessage={errorMessage}
+              handleReset={handleReset}
+              handleGoToPreStep={handleGoToPreStep}
+              authSettings={authSettings}
+              payloadLogin={payloadLogin}
+              handleChangeInputs={handleChangeInputs}
+              verifyAuthentication={verifyAuthentication}
+              loadingStatus={loadingStatus}
+              validationInputs={validationInputs}
+              isExpired={isExpired}
+              setIsExpired={setIsExpired}
+              timeLeft={timeLeft}
+              setTimeLeft={setTimeLeft}
+            />
           ) : null}
         </div>
       </div>
